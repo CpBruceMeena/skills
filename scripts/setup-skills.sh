@@ -1,13 +1,16 @@
 #!/bin/bash
-# setup-skills.sh — Install all skills as global Codebuff slash commands
+# setup-skills.sh — Install all skills as Codebuff slash commands
 #
-# This script discovers every SKILL.md in the cabinet/ hierarchy, reads its
-# `name:` from frontmatter, and symlinks it into ~/.agents/skills/<name>/SKILL.md
-# so Codebuff loads them as /skill:<name> commands.
+# Discovers every SKILL.md in the cabinet/ hierarchy, reads its `name:` from
+# frontmatter, and symlinks it into a target directory so Codebuff loads them
+# as /skill:<name> commands.
 #
 # Usage:
-#   cd Skills/
+#   # Global install (available in all projects)
 #   ./scripts/setup-skills.sh
+#
+#   # Per-project install (isolated to one project)
+#   ./scripts/setup-skills.sh --target /path/to/my-project/.agents/skills
 #
 # Run again after adding, renaming, or updating skills to refresh the symlinks.
 # Restart Codebuff after running this script.
@@ -22,19 +25,45 @@ VERBOSE=false
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -v|--verbose) VERBOSE=true; shift ;;
+        -t|--target)
+            if [ -z "${2:-}" ]; then
+                echo "Error: --target requires a directory path"
+                exit 1
+            fi
+            TARGET_DIR="$2"
+            shift 2
+            ;;
         -h|--help)
-            echo "Usage: $0 [-v|--verbose] [-h|--help]"
+            echo "Usage: $0 [options]"
             echo ""
-            echo "Installs all skills from $SKILLS_DIR into $TARGET_DIR"
+            echo "Installs skills from $SKILLS_DIR into a target directory"
             echo "as symlinks, making them available as Codebuff slash commands."
             echo ""
-            echo "  -v, --verbose    Show full paths for each skill"
-            echo "  -h, --help       Show this help message"
+            echo "Options:"  
+            echo "  -t, --target DIR   Install into DIR/.agents/skills/ instead of ~/.agents/skills/"
+            echo "                     (appends .agents/skills/ automatically)"
+            echo "  -v, --verbose      Show full paths for each skill"
+            echo "  -h, --help         Show this help message"
+            echo ""
+            echo "Examples:"
+            echo "  $0                                  Global install (~/.agents/skills/)"
+            echo "  $0 --target /path/to/my-project     Per-project install"
+            echo "  $0 --target .                       Install in current directory's .agents/skills/"
             exit 0
             ;;
         *) echo "Unknown option: $1"; exit 1 ;;
     esac
 done
+
+# If --target was a project directory, append .agents/skills/ automatically.
+# Skip appending if the path already ends with .agents/skills (in case the
+# user passed the full path).
+if [ "$TARGET_DIR" != "$HOME/.agents/skills" ]; then
+    case "$TARGET_DIR" in
+        *.agents/skills) ;;  # already fully specified
+        *) TARGET_DIR="${TARGET_DIR%/}/.agents/skills" ;;
+    esac
+fi
 
 echo "📁 Skills source: $SKILLS_DIR"
 echo "🎯 Installing to:  $TARGET_DIR"
@@ -83,7 +112,7 @@ while IFS= read -r -d '' skill_file; do
 done < <(find "$SKILLS_DIR" -name 'SKILL.md' -print0)
 
 echo ""
-echo "✨ Done! $count skills installed to ~/.agents/skills/"
+echo "✨ Done! $count skills installed to $TARGET_DIR"
 echo "   Restart Codebuff to load them as slash commands."
 echo ""
 echo "💡 Run '/skill:' in Codebuff to see all available commands."

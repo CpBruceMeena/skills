@@ -408,14 +408,27 @@ If you add, rename, or edit a skill, re-run the setup script to refresh the syml
 
 ### Per-Project Install (Alternative)
 
-To install skills for a specific project instead of globally:
+To install skills into a specific project's `.agents/skills/` directory instead of globally:
 
 ```bash
-cd /path/to/your/project
-mkdir -p .agents/skills
-# Symlink only the skills you need for this project
-ln -s /path/to/Skills/cabinet/ceo .agents/skills/ceo-review
+./scripts/setup-skills.sh --target /path/to/your/project
 ```
+
+The script appends `.agents/skills/` automatically, so skills land in `/path/to/your/project/.agents/skills/`. Codebuff picks them up the next time you open that project.
+
+You can also use a relative path:
+
+```bash
+./scripts/setup-skills.sh --target ../my-awesome-app
+```
+
+Or install into the current directory:
+
+```bash
+./scripts/setup-skills.sh --target .
+```
+
+**Note:** Some projects may already have `.claude/skills/` (Claude Code compatible). The setup script targets `.agents/skills/` which takes priority. You can create a symlink from `.claude/skills/` to `.agents/skills/` if you need both.
 
 ## Design Principles
 

@@ -75,16 +75,173 @@ Phase 9:  Deployment & Release        → feature-manager
 Phase 10: Post-Release Strategy       → ceo-review (re-run)
 ```
 
-## Quick Start
+## Getting Started
 
-To start a **new project**:
+### Prerequisites
 
-1. **Define your users** → Load `audience/` to establish 3 user archetypes
-2. **Set the vision** → Load `cabinet/ceo/` — answers: what, who, why, and how
-3. **Define products** → Load `cabinet/cpo/product/product-review/` — breaks vision into features
-4. **Design** → Load `cabinet/cpo/design/design-lead/` — creates cross-platform UX + delegates to platform designers
-5. **Orchestrate** → Load `cabinet/cpo/feature-manager/` — plans and delegates all engineering, QA, and security work
-6. **Build, test, ship** — The Feature Manager coordinates the full delivery pipeline
+- [Codebuff](https://codebuff.com) CLI installed
+- Git
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/CpBruceMeena/skills.git
+cd skills
+```
+
+### Step 2: Install Skills as Slash Commands (One-Time)
+
+```bash
+./scripts/setup-skills.sh
+```
+
+This symlinks all 24 skills into `~/.agents/skills/<name>/SKILL.md`, making them available as `/skill:<name>` commands in any Codebuff session.
+
+### Step 3: Restart Codebuff
+
+Restart the Codebuff CLI. Type `/skill:` to see all available skills.
+
+That's it. You now have the full framework ready to use in any project.
+
+## Integration into a New Project
+
+Use this flow when starting a product from scratch — from idea to shipped code.
+
+### The 10-Phase Lifecycle
+
+```
+Phase 0  Audience        → /skill:audience          3 user archetypes
+Phase 1  Vision          → /skill:ceo-review        Product vision, roadmap, revenue
+Phase 2  Product         → /skill:product-review     Feature breakdown, user stories
+Phase 3  Design          → /skill:design-lead        Cross-platform UX + platform specs
+                           Gate 1: Design Review
+Phase 4  Orchestration   → /skill:feature-manager    Plan dependencies, timeline, teams
+Phase 5  Engineering     → /skill:engineering-*      Database, backend, frontend, mobile
+                           Gates 2 & 3: Architecture & Implementation Review
+Phase 6  QA              → /skill:qa-*               Per-platform testing
+Phase 7  Security        → /skill:security-engineer   Threat modeling, pen testing
+                           Gate 4: QA & Security Review
+Phase 8  User Testing    → /skill:customer-user       Usability testing, UAT
+Phase 9  Deploy          → Gates 5 + feature-manager  Pre-deployment → release
+Phase 10 Post-Launch     → /skill:ceo-review          Re-evaluate, iterate
+```
+
+### Walkthrough
+
+**1. Define your users** → `/skill:audience`
+Establish 3 user archetypes (Pragmatic Professional, Skeptical First-Timer, Power Scaler) that guide every decision downstream.
+
+**2. Set the vision** → `/skill:ceo-review`
+Answer: what problem, who it's for, revenue model, phased roadmap, success metrics. Produces a CEO Vision Document.
+
+**3. Define products & features** → `/skill:product-review`
+Break the vision into concrete products, features, user stories, and release planning.
+
+**4. Design** → `/skill:design-lead` → platform designers
+The Design Lead creates a cross-platform UX flow and delegates to:
+- `design-desktop-web`, `design-mobile-web`, `design-android`, `design-ios`
+
+**— Gate 1: Design Review → `/skill:engineering-manager`**
+
+The Engineering Manager reviews all designs for technical feasibility before engineering begins.
+
+**5. Orchestrate** → `/skill:feature-manager`
+The Feature Manager plans the entire delivery: dependencies, timelines, team assignments, and tracks progress through every phase.
+
+**6. Engineering** → Delegate to principal engineers
+- `/skill:engineering-database` — Schema design, migrations
+- `/skill:engineering-backend` — APIs, business logic
+- `/skill:engineering-frontend` — Web UI
+- `/skill:engineering-android` — Android native
+- `/skill:engineering-ios` — iOS native
+
+**— Gates 2 & 3: Engineering Manager reviews architecture and implementation**
+
+**7. Quality Assurance** → Per-platform QA skills
+- `/skill:qa-frontend`, `/skill:qa-backend`, `/skill:qa-android`, `/skill:qa-ios`
+
+**8. Security** → `/skill:security-engineer` + `/skill:bug-hunter`
+
+**— Gate 4: QA & Security Review**
+
+**9. User validation** → `/skill:customer-user`
+
+**— Gate 5: Pre-Deployment Review**
+
+**10. Deploy & iterate** → Feature Manager orchestrates release. Re-run CEO review post-launch.
+
+## Integration into an Existing / Running Project
+
+Already have a codebase? You don't need to start from scratch. The skills work independently — pick the ones relevant to your current situation.
+
+### Option A: Add a New Feature to an Existing App
+
+```
+1. /skill:product-review      → Define the feature (skip vision, go straight to feature breakdown)
+2. /skill:design-lead          → UX flow for the new feature
+3. /skill:feature-manager      → Plan and delegate engineering
+4. Pick the engineering skill(s) you need:
+   /skill:engineering-frontend   → Web frontend changes
+   /skill:engineering-backend    → Backend API changes
+   /skill:engineering-database   → Schema changes
+   /skill:engineering-android    → Android changes
+   /skill:engineering-ios        → iOS changes
+5. /skill:qa-frontend            → Test the feature
+6. /skill:engineering-manager    → Review gate before deploy
+```
+
+The Feature Manager handles orchestration regardless of whether it's a greenfield feature or adding to an existing app.
+
+### Option B: Security Audit on an Existing Codebase
+
+```bash
+/skill:security-engineer     → Threat model, penetration testing, dependency audit
+/skill:bug-hunter            → Adversarial edge-case testing, fuzzing
+/skill:engineering-manager    → Review findings, prioritize fixes
+```
+
+### Option C: Performance Optimization
+
+```bash
+/skill:engineering-frontend   → Bundle analysis, render optimization, LCP/CLS audit
+/skill:engineering-backend    → Query profiling, caching strategy, connection pooling
+/skill:engineering-database   → Index analysis, query plan review, migration planning
+```
+
+### Option D: Pre-Launch Readiness
+
+```bash
+/skill:qa-ios                 → App Store readiness checklist, XCUITest review
+/skill:qa-android             → Play Store readiness, baseline profiles, device matrix
+/skill:security-engineer      → Final security sweep
+/skill:engineering-manager    → Pre-deployment gate
+```
+
+### Option E: Post-Launch / Incident Review
+
+```bash
+/skill:bug-hunter             → Root cause analysis of production issue
+/skill:engineering-frontend   → Fix frontend bugs, improve error handling
+/skill:engineering-backend    → Fix backend issues, add monitoring
+/skill:customer-user          → Gather user feedback on the fix
+```
+
+### Picking the Right Skill for Your Situation
+
+| If you need to... | Start with this skill | Followed by... |
+|---|---|---|
+| Start a new product | `ceo-review` | `product-review` → `design-lead` → `feature-manager` |
+| Add a feature to an existing app | `product-review` | `feature-manager` → relevant engineering skills |
+| Fix a production bug | `engineering-*` (whichever platform) | `bug-hunter` for root cause |
+| Improve performance | `engineering-frontend` / `engineering-backend` / `engineering-database` | — |
+| Run a security audit | `security-engineer` | `bug-hunter` → `engineering-manager` |
+| Prepare for App Store launch | `qa-ios` | `engineering-manager` |
+| Prepare for Play Store launch | `qa-android` | `engineering-manager` |
+| Run QA on a new feature | `qa-frontend` / `qa-backend` / `qa-android` / `qa-ios` | `engineering-manager` (Gate 4) |
+| Test with real users | `customer-user` | `engineering-manager` |
+| Review architecture | `engineering-manager` | Relevant principal engineer |
+| Define documentation standards | `tech-doc-manager` | All teams |
+| Understand your users | `audience` | All downstream decisions |
 
 ## Skill Index
 

@@ -1,7 +1,7 @@
 ---
 name: engineering-manager
-version: 1.0.0
-description: Engineering Manager review and oversight — reviews architecture decisions, code quality, cross-team alignment, technical design documents, and ensures engineering excellence across all disciplines.
+version: 1.1.0
+description: Engineering Manager review and oversight — reviews architecture decisions, code quality, cross-team alignment, technical design documents, and ensures engineering excellence across all disciplines. Supports incremental architecture review (frontend-first, backend-second) as orchestrated by feature-manager.
 allowed-tools:
   - Read
   - Write
@@ -68,14 +68,19 @@ This skill is invoked automatically by the Feature Manager at key review gates:
 **Output**: Design approval or revision requests to `cabinet/cto/engineering/engineering-manager/doc-store/feature-{name}/design-review.md`
 
 ### Gate 2: Architecture Review ✅
-**Timing**: After Engineering architecture decisions, before implementation begins
+**Timing**: After Engineering architecture decisions, before implementation begins. Can be triggered incrementally — the feature-manager may invoke Gate 2 during the Frontend phase and Gate 3 during the Backend phase.
 
-**Review inputs**:
-- Frontend architecture: `cabinet/cto/engineering/engineering-frontend/doc-store/feature-{name}/architecture.md`
-- Backend architecture: `cabinet/cto/engineering/engineering-backend/doc-store/feature-{name}/architecture.md`
-- Database schema: `cabinet/cto/engineering/engineering-database/doc-store/feature-{name}/schema.md`
-- Android architecture: `cabinet/cto/engineering/engineering-android/doc-store/feature-{name}/`
-- iOS architecture: `cabinet/cto/engineering/engineering-ios/doc-store/feature-{name}/`
+> **Incremental review**: When the `feature-manager` uses Frontend → Backend sequential ordering (the default for frontend features), Gate 2 reviews **frontend + mobile** architecture first. Backend and database architecture are reviewed during Gate 3 alongside implementation. This prevents blocking frontend work while backend is still being designed.
+
+**Review inputs** (available inputs may vary per pass — review what's ready):
+- **Pass 1 (Frontend phase)**:
+  - Frontend architecture: `cabinet/cto/engineering/engineering-frontend/doc-store/feature-{name}/architecture.md`
+  - Android architecture: `cabinet/cto/engineering/engineering-android/doc-store/feature-{name}/`
+  - iOS architecture: `cabinet/cto/engineering/engineering-ios/doc-store/feature-{name}/`
+  - API contracts (draft): `cabinet/cto/engineering/engineering-frontend/doc-store/feature-{name}/api-contracts.md`
+- **Pass 2 (Backend phase — reviewed during Gate 3)**:
+  - Backend architecture: `cabinet/cto/engineering/engineering-backend/doc-store/feature-{name}/architecture.md`
+  - Database schema: `cabinet/cto/engineering/engineering-database/doc-store/feature-{name}/schema.md`
 
 **Review criteria**:
 - [ ] Are architecture decisions documented with clear rationale and tradeoffs?
@@ -98,12 +103,16 @@ This skill is invoked automatically by the Feature Manager at key review gates:
 **Output**: Architecture approval or revision requests to `cabinet/cto/engineering/engineering-manager/doc-store/feature-{name}/architecture-review.md`
 
 ### Gate 3: Implementation Review ✅
-**Timing**: During implementation, per major milestone
+**Timing**: During implementation, per major milestone. When using incremental architecture review, this gate also reviews backend architecture and database schema alongside implementation.
+
+> **Incremental review**: When Frontend → Backend ordering is used, Gate 3 serves double duty — it reviews **backend architecture + database schema** (the Pass 2 inputs from Gate 2) together with the **implementation progress** of all tracks. This ensures backend architecture is reviewed before backend implementation completes, without blocking frontend.
 
 **Review inputs**:
 - Access to repositories, PRs, and code
 - Test coverage reports
 - Performance benchmarks
+- **Backend architecture** (if not reviewed in Gate 2): `cabinet/cto/engineering/engineering-backend/doc-store/feature-{name}/architecture.md`
+- **Database schema** (if not reviewed in Gate 2): `cabinet/cto/engineering/engineering-database/doc-store/feature-{name}/schema.md`
 
 **Review criteria**:
 - [ ] Are the principal engineering standards being followed?
@@ -114,6 +123,8 @@ This skill is invoked automatically by the Feature Manager at key review gates:
 - [ ] Is the implementation on track with the planned timeline?
 - [ ] Are cross-team dependencies resolved?
 - [ ] Is documentation being maintained alongside code?
+
+> **When reviewing backend architecture in this gate** (Pass 2 incremental review): Apply all Gate 2 architecture review criteria to the backend architecture and database schema. Specifically check API contract compliance, data model consistency, auth patterns, and observability planning.
 
 **Output**: Progress report to `cabinet/cto/engineering/engineering-manager/doc-store/feature-{name}/implementation-review.md`
 

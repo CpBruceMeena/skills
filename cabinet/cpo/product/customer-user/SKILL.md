@@ -30,8 +30,8 @@ When in doubt about any user testing decision — whether it's a test scenario c
 Simulate end-user behavior from the outside-in, evaluate usability, collect actionable feedback, and validate that the product meets real user needs and expectations. This skill bridges the gap between the company's internal vision (CEO, Engineering, Design) and the external reality of actual users.
 
 ## Triggered By
+- **Full gate:** Invoked by `feature-manager` after QA and Security clearances (comprehensive UAT) — this is the primary trigger. See `cabinet/cpo/feature-manager/` for the full orchestration workflow.
 - **Parallel track:** Runs concurrently with active development sprints (lightweight weekly check-ins with audience personas)
-- **Full gate:** Feature Manager after QA and Security clearances (comprehensive UAT)
 - CEO Review requesting user validation
 - Post-deployment for ongoing feedback
 
@@ -197,7 +197,9 @@ Validate against acceptance criteria from Product Specs from each audience arche
 - Does it handle errors gracefully? (all audience archetypes)
 - Does it scale to real-world usage? (Power Scaler)
 
-### 7. Report Generation
+### 7. Report Generation & Sign-Off
+
+> **The uat-report serves as the sign-off artifact that `feature-manager` checks before marking the feature Done.**
 
 1. Compile findings into a structured report:
    - **Executive Summary**: Key findings at a glance
@@ -208,6 +210,10 @@ Validate against acceptance criteria from Product Specs from each audience arche
    - **Positive Highlights**: What's working well (per audience archetype)
    - **Blind Spots**: Issues that only one audience archetype caught
    - **Recommendations**: Prioritized improvement list
+2. **Include a clear sign-off statement** at the top of the report: `**User Validation Sign-Off: [APPROVED / CONDITIONALLY APPROVED / NOT APPROVED]**`
+   - `APPROVED`: All pass criteria met. Feature is ready to be marked Done by `feature-manager`.
+   - `CONDITIONALLY APPROVED`: Minor issues found, but non-blocking. Feature can proceed with tracked follow-ups.
+   - `NOT APPROVED`: Critical issues found. Feature must be sent back for fixes before re-validation.
 
 ## Output
 - `cabinet/cpo/doc-store/audience/{product}/personas.md`: User personas (based on templates)

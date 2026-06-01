@@ -1,6 +1,6 @@
 ---
 name: qa-frontend
-version: 2.0.0
+version: 2.1.0
 description: Principal-level QA engineering for frontend web — comprehensive testing strategy, automation architecture, visual regression, accessibility auditing, and performance validation.
 allowed-tools:
   - Read
@@ -48,7 +48,19 @@ When in doubt about any testing decision — whether it's a test strategy choice
 
 ## Automation Architecture
 
-### Playwright (Recommended Primary)
+### Playwright CLI (1st Priority — Always)
+
+> **Playwright CLI (`npx playwright`) is the first and preferred tool** — use it directly via `npx playwright`, not through wrappers.
+
+```bash
+# Quick start (no install needed if using npx)
+npx playwright test
+npx playwright test --ui        # Interactive UI mode
+npx playwright codegen          # Test generator (record clicks)
+
+# Or install in project
+npm init playwright@latest
+```
 
 ```typescript
 import { test, expect } from '@playwright/test';
@@ -74,9 +86,34 @@ class LoginPage {
 }
 ```
 
-**Key patterns**: Use `data-testid` attributes (never CSS classes or text content), use page objects for maintainability, run tests in parallel across browsers, use trace viewer for debugging failures.
+**Key patterns**:
+- Use `npx playwright` directly — never install globally, never use wrappers
+- Use `data-testid` attributes (never CSS classes or text content)
+- Use page objects for maintainability
+- Run tests in parallel across browsers
+- Use trace viewer for debugging failures
+- Use `toHaveScreenshot()` for built-in visual regression
 
-### Visual Regression (Chromatic / Percy)
+### Visual Regression (Playwright CLI Built-in + Chromatic / Percy)
+
+Playwright CLI has **built-in screenshot comparison** — prefer this before adding third-party tools:
+
+```bash
+# Update baseline screenshots
+npx playwright test --update-snapshots
+```
+
+```typescript
+// Built-in visual comparison — no extra tools needed
+test('homepage matches snapshot', async ({ page }) => {
+    await page.goto('/');
+    await expect(page).toHaveScreenshot('homepage.png', {
+        maxDiffPixels: 100,
+    });
+});
+```
+
+For component-level visual regression in Storybook, supplement with Chromatic/Percy:
 
 ```typescript
 // Component-level visual tests in Storybook
@@ -89,7 +126,7 @@ export const Loading = () => <Button loading>Saving...</Button>;
 // Chromatic automatically diffs each story
 ```
 
-**Principal insight**: Visual regression is the highest-ROI testing investment for frontend. A single screenshot diff catches: wrong colors, broken layouts, spacing issues, font changes, icon regressions, and responsive breakpoint issues—all things that functional tests never catch.
+**Principal insight**: Visual regression is the highest-ROI testing investment for frontend. A single screenshot diff catches: wrong colors, broken layouts, spacing issues, font changes, icon regressions, and responsive breakpoint issues—all things that functional tests never catch. Start with Playwright's built-in `toHaveScreenshot()` before adding third-party tools.
 
 ## What to Test (By Priority)
 

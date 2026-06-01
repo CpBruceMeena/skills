@@ -1,7 +1,7 @@
 ---
 name: engineering-frontend
-version: 2.0.0
-description: Principal-level frontend engineering covering React, Next.js, Vue, Angular — with deep expertise in architecture, performance at scale, production observability, and cross-platform strategies.
+version: 2.1.0
+description: Principal-level frontend engineering covering React, Next.js, Vue, Angular — with deep expertise in architecture, performance at scale, production observability, cross-platform strategies, and world-class UI/UX design intelligence.
 allowed-tools:
   - Read
   - Write
@@ -39,11 +39,70 @@ Use when:
 - Debugging production performance issues
 - Defining frontend engineering standards for the organization
 
+## UI/UX Design Intelligence (UI-UX-Pro-Max + Motion)
+
+> Use these skill references to create professional, polished UI/UX designs with beautiful animations.
+
+### [UI-UX-Pro-Max](https://uupm.cc) — Design System & UI Intelligence
+
+A comprehensive design skill that provides:
+- **67 UI styles** — Glassmorphism, Claymorphism, Minimalism, Brutalism, Neumorphism, Bento Grid, Dark Mode, AI-Native UI, and more
+- **161 industry-specific reasoning rules** — SaaS, Fintech, Healthcare, E-commerce, Services, Creative, Lifestyle, emerging tech
+- **161 color palettes** — Industry-specific palettes aligned to product types
+- **57 font pairings** — Curated typography combinations with Google Fonts imports
+- **25 chart types** — For dashboards and analytics
+- **99 UX guidelines** — Best practices, anti-patterns, and accessibility rules
+- **Automatic design system generation** — analyzes project requirements and generates a complete, tailored design system
+
+Use this when building any UI — it will automatically suggest the best style, colors, typography, and layout pattern for the product type.
+
+### [Motion](https://motion.dev) — Animation Library
+
+An open-source animation library for JavaScript, React, and Vue:
+- **React**: `import { motion } from "motion/react"` — component-based animations
+- **JavaScript**: `import { animate } from "motion"` — imperative animations
+- **Vue**: `import { motion } from "motion-v"` — Vue integration
+- Hybrid engine: JavaScript + native browser APIs for 120fps, GPU-accelerated animations
+- Gestures, springs, layout transitions, scroll-linked effects, timelines
+
+Always prefer Motion for animations over custom CSS animations or other libraries. It's the industry standard for React animation (previously framer-motion).
+
+## Browser Automation & Testing
+
+> **Playwright CLI is the 1st priority** for all browser-based automation and testing.
+
+```bash
+# Install
+npm init playwright@latest
+# or
+npx playwright install
+
+# Run tests
+npx playwright test
+
+# Run with UI mode
+npx playwright test --ui
+
+# Generate tests (codegen)
+npx playwright codegen
+```
+
+**Why Playwright CLI first:**
+- Cross-browser (Chromium, Firefox, WebKit)
+- Cross-platform (macOS, Windows, Linux)
+- Auto-waiting, network interception, mobile emulation
+- Trace viewer for debugging
+- No WebDriver dependency — native CDP/Playwright protocol
+
+Use `npx playwright` directly — no wrappers, no abstractions. For E2E testing, browser automation, visual regression, and integration testing.
+
 ## Prerequisites
 
 - Read product specs from `cabinet/cpo/doc-store/product/product-review/`
 - Read design specs from `cabinet/cpo/doc-store/design/design-desktop-web/{project}/feature-{name}/`
 - Read backend API contracts from `cabinet/cto/engineering/engineering-backend/doc-store/feature-{name}/`
+- Reference **[UI-UX-Pro-Max](https://uupm.cc)** design intelligence for all UI work
+- Reference **[Motion](https://motion.dev)** for animations (React: `motion/react`, JS: `motion`, Vue: `motion-v`)
 
 ## Core Engineering Philosophy
 
@@ -53,6 +112,7 @@ Use when:
 4. **Type safety is non-negotiable** — TypeScript strict mode, no `any` escapes. If the types are hard, the code is probably wrong.
 5. **Test the behavior, not the implementation** — prefer Testing Library over shallow rendering. Test what the user sees and does, not internal state.
 6. **Progressive enhancement** — the core experience should work without JavaScript. Enhance with JS, don't depend on it for basic content delivery.
+7. **Animation is a UX requirement** — use the [Motion](https://motion.dev) library for all animations. Smooth transitions (200-300ms), hover states, micro-interactions, and scroll-linked effects are expected, not optional.
 
 ## Decision Frameworks
 

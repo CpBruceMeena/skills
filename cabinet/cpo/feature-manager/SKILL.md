@@ -1,7 +1,7 @@
 ---
 name: feature-manager
-version: 3.0.0
-description: End-to-end feature orchestration manager — coordinates all skills from design through engineering, QA, security, and user testing to deliver a complete feature. Enforces strict sequential ordering: Design → Frontend → Backend → QA (both) → User Validation → Done. Documentation-first: every feature starts with a doc and movement log for resume safety.
+version: 3.1.0
+description: End-to-end feature orchestration manager — coordinates all skills from design through engineering, QA, security, and user testing to deliver a complete feature. Supports multiple flow variants: frontend features (Design → Frontend → Backend → QA → User → Done), backend-only features (Engineering → QA → User → Done, with conditional phases), and rework cycles with retry limits. Documentation-first: every feature starts with a doc and movement log for resume safety.
 allowed-tools:
   - Read
   - Write
@@ -64,6 +64,63 @@ All documentation follows the schemas and standards defined by `tech-doc-manager
 - Doc-store schemas and naming conventions
 - Required document types per phase
 - Quality gates for documentation completeness
+
+### 5. Flow Variants — Choosing the Right Path
+
+> **The strict sequential order (Core Principle 2) applies to frontend features only. Different feature types follow adapted flows.**
+
+Determine the feature type during intake and select the correct path:
+
+#### Variant A: Frontend Feature (Web, Mobile, or Both)
+
+This is the default flow from Core Principle 2. Use when the feature has ANY user-facing UI — web, Android, iOS, or a combination.
+
+```
+Design → Gate 1 → Frontend Engineering → Backend Engineering + Database
+  → Gate 2/3 (incremental: frontend arch pass, then backend arch pass)
+    → QA: Backend first → Frontend second → Gate 4 → User Validation → Gate 5 → Done
+```
+
+#### Variant B: Backend-Only Feature (No Frontend)
+
+Use when the feature has NO user-facing UI — API services, worker processes, integrations, webhook handlers, internal infrastructure.
+
+```
+Backend Engineering + Database → Gate 2/3 (combined — all architecture at once)
+  → QA: Backend QA only (no frontend QA)
+    → Gate 4: QA & Security Review
+      → User Validation: CONDITIONAL (skip for internal services, run for public APIs)
+        → Gate 5 → Done
+```
+
+**Key differences from Variant A**:
+- **Design phase**: Skipped entirely (no frontend to design)
+- **Frontend phase**: Skipped entirely (no UI to build)
+- **Gate 2/3**: Combined into a single review (no incremental split needed — no frontend to block)
+- **QA scope**: Backend QA + Security only. Frontend QA is skipped. Mobile QA is skipped.
+- **User validation**: Conditional — required for public APIs/developer-facing features, skipped for internal-only services
+- **Completion checklist**: Design and Frontend checkboxes are marked as "Skipped by scope" instead of "Complete"
+
+#### Variant C: Mobile-Only Feature (Android + iOS, No Web)
+
+Use when the feature targets native mobile platforms but has no web frontend. Design is still required, and frontend engineering focuses on mobile tracks only.
+
+```
+Design (Android + iOS only) → Gate 1
+  → Mobile Engineering (Android + iOS only, no web track)
+    → Backend Engineering + Database
+      → Gate 2/3 (incremental: mobile arch pass, then backend arch pass)
+        → QA: Backend first → Mobile QA (Android + iOS) → Gate 4
+          → User Validation → Gate 5 → Done
+```
+
+**Key differences from Variant A**:
+- **Design**: `design-android` + `design-ios` only. No web design skills needed.
+- **Frontend**: `engineering-android` + `engineering-ios` only. No web track.
+- **API contracts**: Defined by mobile teams, consumed by backend (same principle as web frontend)
+- **QA**: `qa-backend` → `qa-android` + `qa-ios`. No `qa-frontend` needed.
+- **Gate 2**: Reviews mobile architecture (Android + iOS) in Pass 1
+- **All other phases**: Same as Variant A
 
 ## Triggered By
 - CEO Review outcome directing the development of a feature
@@ -165,47 +222,114 @@ All documentation follows the schemas and standards defined by `tech-doc-manager
 
 #### Phase 4: Quality Assurance (Backend First, Then Frontend)
 
-> **Rule**: QA validates backend first, then frontend — ensuring the API layer is correct before testing the UI that consumes it.
+> **Rule**: QA validates backend first, then frontend — ensuring the API layer is correct before testing the UI that consumes it. **Scope adapts to feature type** — only the QA skills relevant to the feature are invoked.
 
-1. Delegate QA in this order:
+1. **Determine QA scope based on feature type**:
+   - **Frontend features** (Variant A): Full scope — Backend QA → Frontend QA → Mobile QA (if applicable)
+   - **Backend-only features** (Variant B): Reduced scope — Backend QA only. Frontend QA and Mobile QA are skipped.
+   - **Mobile-only features** (Variant C): Backend QA → Mobile QA (Android + iOS). Web frontend QA is skipped.
+
+2. Delegate QA in this order (applying to applicable skills only):
    - **Step 1 — Backend QA**: `qa-backend` — API, service, and database testing (validate contracts are correct)
-   - **Step 2 — Frontend QA**: `qa-frontend` — UI/UX and frontend component testing (validate UI against tested backend)
+   - **Step 2 — Frontend/UI QA** (skip for backend-only): `qa-frontend` — UI/UX and frontend component testing (validate UI against tested backend)
    - **Mobile QA** (if applicable): `qa-android` + `qa-ios` — platform-specific testing
-2. Address bugs in order: backend bugs first, then frontend
-3. Retest after fixes
-4. Security & Deep Testing:
+3. Address bugs in order: backend bugs first, then frontend/mobile
+4. Retest after fixes
+5. Security & Deep Testing:
    - `security-engineer`: Security audit
    - `bug-hunter`: Deep adversarial testing
-5. Address all critical and high findings
-6. **→ `engineering-manager` (Gate 4: QA & Security Review)** — review all reports and sign-off
-7. **Log in movement tracker**: "QA complete. All bugs resolved. Gate 4 passed. Handing to User Validation."
+6. Address all critical and high findings
+7. **→ `engineering-manager` (Gate 4: QA & Security Review)** — review all reports and sign-off
+8. **Log in movement tracker**: "QA complete. All bugs resolved. Gate 4 passed. Handing to User Validation."
 
 #### Phase 5: User Validation (Gate Before Done)
 
-> **Rule**: The feature is NOT marked complete until user validation passes and `customer-user` returns an `APPROVED` or `CONDITIONALLY APPROVED` sign-off.
+> **Rule**: The feature is NOT marked complete until user validation passes (for features that require it) and `customer-user` returns an `APPROVED` or `CONDITIONALLY APPROVED` sign-off.
 
-1. Delegate `customer-user` (`cabinet/cpo/product/customer-user/`): Usability testing and UAT
-2. Wait for the UAT report from `cabinet/cpo/doc-store/audience/{product}/uat-report-{version}.md`
-3. Check the sign-off status in the report:
+1. **Determine if user validation is needed**:
+   - **Frontend features** (Variant A): REQUIRED — always run UAT
+   - **Backend-only features** (Variant B): CONDITIONAL — run for public APIs/developer-facing features. Skip for internal-only services.
+   - **Mobile-only features** (Variant C): REQUIRED — same as frontend features
+   - When in doubt, run it. Cost of skipping is higher than cost of running.
+
+2. Delegate `customer-user` (`cabinet/cpo/product/customer-user/`): Usability testing and UAT
+3. Wait for the UAT report from `cabinet/cpo/doc-store/audience/{product}/uat-report-{version}.md`
+4. Check the sign-off status in the report:
    - **APPROVED**: All pass criteria met. Proceed to Feature Completion Gate.
    - **CONDITIONALLY APPROVED**: Minor issues found. Document in movement tracker, proceed with tracked follow-ups.
-   - **NOT APPROVED**: Critical issues found. Send back to engineering for fixes, then re-run QA and user validation.
-4. Collect feedback and coordinate any final tweaks
-5. **Log in movement tracker**: "User validation complete. Sign-off: {APPROVED/CONDITIONALLY APPROVED/NOT APPROVED}. Feedback addressed."
+   - **NOT APPROVED**: Critical issues found. Trigger rework cycle (see below).
+5. Collect feedback and coordinate any final tweaks
+6. **Log in movement tracker**: "User validation complete. Sign-off: {APPROVED/CONDITIONALLY APPROVED/NOT APPROVED}. Feedback addressed."
+
+##### Rework Cycle: NOT APPROVED Handling
+
+When `customer-user` returns `NOT APPROVED`, follow this structured rework process:
+
+```
+1. Track rework iteration:
+   movement.md → Rework Iteration: #{count}
+   
+2. Max allowed retries: 3
+   - Iteration 1-2: Normal rework (send to engineering → QA → re-validate)
+   - Iteration 3 (last): Full rework + mandatory escalation to product owner
+   - After 3 failures: Feature is BLOCKED. Escalate to CEO/product owner for:
+       * Scope reduction (cut problematic features)
+       * Redesign (fundamental approach change)
+       * De-scope (remove feature from current release)
+
+3. Rework steps:
+   a. Extract critical issues from UAT report (specific, actionable items)
+   b. Send back to relevant engineering skill(s) with explicit fix list
+   c. After fixes → re-run QA (affected areas only for efficiency)
+   d. Re-open Gate 4: engineering-manager reviews fixes and signs off
+   e. Re-run customer-user UAT with same audience archetypes
+   f. Check new sign-off. If still NOT APPROVED and iteration < 3, repeat.
+
+4. Log every rework iteration in the movement tracker with:
+   - Iteration number
+   - Issues being addressed
+   - Fixes implemented
+   - QA re-run results
+   - Re-validation outcome
+```
+
+**Example movement log entry for rework cycle:**
+```markdown
+### 2026-06-01 14:30 — User Validation (Rework #1)
+- **Action**: UAT returned NOT APPROVED. 2 critical issues found.
+- **Issues**: Export timeout >5s for 500+ rows; No pagination support
+- **Rework Iteration**: 1/3 max
+- **Next Step**: Send to engineering-backend for fixes, then re-run QA
+```
 
 #### Phase 6: Feature Completion Gate
 
 > **Only now is the feature marked as Done.**
 
-1. Verify all previous phases are complete and logged:
-   - [ ] Design complete (Gate 1 passed)
-   - [ ] Frontend engineered
-   - [ ] Backend engineered (Gate 2/3 passed)
-   - [ ] QA complete (backend + frontend) (Gate 4 passed)
-   - [ ] User validation complete and signed off
+1. Verify all previous phases are complete and logged. **Checklist adapts to feature type**:
+   - **For frontend features (Variant A):**
+     - [ ] Design complete (Gate 1 passed)
+     - [ ] Frontend engineered
+     - [ ] Backend engineered (Gate 2/3 passed)
+     - [ ] QA complete (backend + frontend) (Gate 4 passed)
+     - [ ] User validation complete and signed off
+   - **For backend-only features (Variant B):**
+     - [ ] Design — **Skipped by scope** (no frontend)
+     - [ ] Frontend — **Skipped by scope** (no frontend)
+     - [ ] Backend engineered (Gate 2/3 passed)
+     - [ ] QA complete (backend only) (Gate 4 passed)
+     - [ ] User validation — **Skipped by scope** (internal service) or signed off (public API)
+   - **For mobile-only features (Variant C):**
+     - [ ] Design complete (Android + iOS) (Gate 1 passed)
+     - [ ] Mobile engineered (Android + iOS) — **Web frontend skipped by scope**
+     - [ ] Backend engineered (Gate 2/3 passed)
+     - [ ] QA complete (backend + mobile) (Gate 4 passed)
+     - [ ] User validation complete and signed off
 2. Mark the feature as **Done** in the movement tracker
 3. Save completion report to `cabinet/cpo/feature-manager/feature-{name}/completion.md`
 4. **Log in movement tracker**: "Feature marked DONE. All phases complete."
+
+  **If any rework cycles occurred:** include iteration count in the completion report.
 
 #### Phase 7: Deployment & Release
 1. **→ `engineering-manager` (Gate 5: Pre-Deployment Final Review)** — final technical sign-off
@@ -236,7 +360,9 @@ The movement log (`movement.md`) is the **resume-safe document**. If the system 
 ```markdown
 # Feature: {feature-name} — Movement Log
 
-## Current Phase: [Design / Frontend / Backend / QA / User Validation / Done]
+## Current Phase: [Design / Frontend / Backend / QA / User Validation / Done / Skipped by Scope]
+## Feature Type: [Frontend / Backend-Only / Mobile-Only]
+## Rework Iteration: {0} (incremented on NOT APPROVED)
 ## Last Action: {timestamp} — {brief description}
 
 ### {YYYY-MM-DD HH:MM} — {Phase Name}

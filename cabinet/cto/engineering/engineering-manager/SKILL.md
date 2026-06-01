@@ -1,7 +1,7 @@
 ---
 name: engineering-manager
-version: 1.1.0
-description: Engineering Manager review and oversight — reviews architecture decisions, code quality, cross-team alignment, technical design documents, and ensures engineering excellence across all disciplines. Supports incremental architecture review (frontend-first, backend-second) as orchestrated by feature-manager.
+version: 1.2.0
+description: Engineering Manager review and oversight — reviews architecture decisions, code quality, cross-team alignment, technical design documents, and ensures engineering excellence across all disciplines. Supports incremental architecture review (frontend-first, backend-second) and feature-type-aware review gates as orchestrated by feature-manager.
 allowed-tools:
   - Read
   - Write
@@ -49,11 +49,11 @@ This skill is invoked automatically by the Feature Manager at key review gates:
 ## Review Gates
 
 ### Gate 1: Design Review ✅
-**Timing**: After Design skills complete, before Engineering begins
+**Timing**: After Design skills complete, before Engineering begins. Skipped for backend-only features (no design exists).
 
-**Review inputs**:
+**Review inputs** (available inputs vary by feature type — review what's provided):
 - Cross-platform UX flow from `design-lead`
-- Platform-specific specs from `design-android`, `design-ios`, `design-mobile-web`, `design-desktop-web`
+- Platform-specific specs from `design-android`, `design-ios` (web specs `design-mobile-web`, `design-desktop-web` present only for frontend features)
 - Product specs from `cabinet/cpo/doc-store/product/product-review/`
 
 **Review criteria**:

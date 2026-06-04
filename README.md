@@ -10,17 +10,20 @@ Every feature implementation follows these rules in order:
 
 | # | Rule | Detail |
 |---|------|--------|
-| 1 | **Design First** | Always invoke the designer skill before any engineering begins |
-| 2 | **Frontend Before Backend** | Frontend is engineered first; it defines API contracts that backend implements |
-| 3 | **Backend QA First** | QA validates backend APIs before testing the frontend UI |
-| 4 | **User Validates Before Done** | No feature is marked complete until `customer-user` approves it |
-| 5 | **Doc Every Step** | Every phase starts by creating/updating the movement log (`movement.md`) |
-| 6 | **Go for Apps, Python for Adhoc** | Application-level work uses Go; scraping/media/doc/CSV uses Python |
-| 7 | **Playwright for Browser Automation** | All browser testing uses `npx playwright` as first priority |
+| 1 | **Feature Manager Gateway** | ALL feature-level sub-skill invocation MUST route through `/skill:feature-manager`. Do not invoke design, engineering, QA, or user-testing sub-skills directly for feature work. |
+| 2 | **Design First** | Always invoke the designer skill before any engineering begins |
+| 3 | **Frontend Before Backend** | Frontend is engineered first; it defines API contracts that backend implements |
+| 4 | **Backend QA First** | QA validates backend APIs before testing the frontend UI |
+| 5 | **User Validates Before Done** | No feature is marked complete until `customer-user` approves it |
+| 6 | **Doc Every Step** | Every phase starts by creating/updating the movement log (`movement.md`) |
+| 7 | **Go for Apps, Python for Adhoc** | Application-level work uses Go; scraping/media/doc/CSV uses Python |
+| 8 | **Playwright for Browser Automation** | All browser testing uses `npx playwright` as first priority |
 
 ## Skills Org Chart
 
 The skills form an organizational hierarchy where parent directors control their sub-skills. Each box represents a `/skill:<name>` you can invoke. Sub-skills can only be invoked through their parent director.
+
+> ⚠️ **Feature Manager is the SOLE ENTRY POINT for all feature-level sub-skill invocation.** Do not invoke design, engineering, QA, or user-testing sub-skills directly for feature work — always route through `/skill:feature-manager`.
 
 ```
                               ┌──────────────────────────────────────┐
@@ -37,30 +40,37 @@ The skills form an organizational hierarchy where parent directors control their
 └─────────────┘  └─────────────────┘           │                    │
                       ┌────────────────────────┼────────────────────┘
                       │                        │
-                      ▼                        ▼                                  
-          ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────────────┐                     
-          │  Feature Manager  │  │ Product Review   │  │    Design Lead           │                     
-          │ /skill:feature-   │  │ /skill:product-  │  │ /skill:design-lead       │                     
-          │ manager           │  │ review           │  └───────────┬──────────────┘                     
-          └──────────────────┘  ├──────────────────┤              │                                      
-                                │ customer-user    │     ┌────────┼────────┐                             
-                                │ /skill:customer- │     ▼        ▼        ▼                             
-                                │ user             │  ┌────────┐ ┌────────┐ ┌───────┐                    
-                                └──────────────────┘  │design- │ │design- │ │design-│                    
-                                                       │android │ │  ios   │ │desktop│                    
-                  ┌────────────────────────────────┐   └────────┘ └────────┘ └───────┘                    
-                  │         Video Director          │                        │                             
-                  │      /skill:video-director       │                  ┌────────┐                         
-                  └──┬──────────┬──────────┬────────┘                  │design- │                         
-                     │          │          │                            │mobile  │                         
-                     ▼          ▼          ▼                            │  web   │                         
-               ┌────────┐ ┌────────┐ ┌────────┐                       └────────┘                         
-               │script- │ │voice-  │ │animator│                                                           
-               │writer  │ │over    │ └────────┘                                                           
-               └────────┘ └────────┘     │                                                                 
-                                   ┌──────────┐  ┌────────┐  ┌──────────┐                                 
-                                   │ remotion │  │ editor │  │packaging │                                 
-                                   └──────────┘  └────────┘  └──────────┘                                 
+                      ▼                        ▼
+          ┌──────────────────────────────────────────────────────────────────┐
+          │                   FEATURE MANAGER                                │
+          │               /skill:feature-manager                             │
+          │   ╔═══════════════════════════════════════════════════════════╗  │
+          │   ║  SOLE ENTRY POINT for all feature-level sub-skill        ║  │
+          │   ║  invocation — design, engineering, QA, user testing      ║  │
+          │   ║  Do NOT invoke sub-skills directly for feature work      ║  │
+          │   ╚═══════════════════════════════════════════════════════════╝  │
+          └──────────────────────────────────────────────────────────────────┘
+                               │
+          ┌────────────────────┼────────────────────┐
+          ▼                    ▼                    ▼
+  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────────────┐
+  │ Product Review   │  │  Design Lead     │  │  Video Director          │
+  │ /skill:product-  │  │ /skill:design-   │  │ /skill:video-director    │
+  │ review           │  │ lead             │  └──────────┬──────────────┘
+  ├──────────────────┤  └───────────┬──────┘             │
+  │ customer-user    │              │               ┌────┼────┐
+  │ /skill:customer- │         ┌────┼────┐          ▼    ▼    ▼
+  │ user             │         ▼    ▼    ▼      ┌────────┐ ┌────────┐ ┌────────┐
+  └──────────────────┘  ┌────────┐ ┌────────┐ ┌───────┐│script- ││voice-  ││animator│
+                         │design- │ │design- │ │design-││writer  ││over    │└────────┘
+                         │android │ │  ios   │ │desktop│└────────┘└────────┘    │
+                         └────────┘ └────────┘ └───────┘                 ┌──────────┐ ┌────────┐ ┌──────────┐
+                               │                                    │ remotion │ │ editor │ │packaging │
+                         ┌────────┐                                 └──────────┘ └────────┘ └──────────┘
+                         │design- │
+                         │mobile  │
+                         │  web   │
+                         └────────┘
                                                                                                           
                ┌──────────────────────────────────────────────────────────────────────────┐                
                │                         CTO (continued)                                  │                
@@ -86,6 +96,8 @@ The skills form an organizational hierarchy where parent directors control their
         │frontend│ │backend │ │android │ │  ios   │
         └────────┘ └────────┘ └────────┘ └────────┘                                           
 ```
+
+> ⚠️ **Note:** The Feature Manager orchestrates ALL feature work — from design through engineering, QA, security, and user testing. Parent directors (Design Lead, Video Director, Engineering Manager, CISO) are invoked by the Feature Manager as needed, never directly.
 
 ## Directory Structure
 
@@ -141,7 +153,11 @@ Each skill is an expert agent with deep domain expertise, a defined workflow, de
 
 ## End-to-End Feature Flow (How Features Get Built)
 
+All feature-level sub-skill invocation routes through `/skill:feature-manager`. The Feature Manager orchestrates the full pipeline:
+
 ```
+Feature Manager orchestrates:
+    │
 Step 1: DESIGN  ──→  Design Lead → platform designers
           ├── Gate 1: Engineering Manager (Design Review)
 Step 2: FRONTEND ──→  Frontend (web + mobile) — defines API contracts
@@ -169,17 +185,21 @@ Then restart Codebuff. All 34 skills appear under `/skill:`.
 
 ## Project Lifecycle
 
+> **All feature-level phases (3–9) are orchestrated by `/skill:feature-manager`.** Do not invoke design, engineering, QA, security, or user-testing skills directly — always route through Feature Manager.
+
 ```
 Phase 0  Audience        → /skill:audience
 Phase 1  Vision          → /skill:ceo-review
 Phase 2  Product         → /skill:product-review
-Phase 3  Design          → /skill:design-lead       Gate 1: Design Review
-Phase 4  Orchestration   → /skill:feature-manager
-Phase 5  Engineering     → /skill:engineering-*     Gates 2 & 3: Arch & Impl Review
-Phase 6  QA              → /skill:qa-*              Per-platform testing
-Phase 7  Security        → /skill:security-engineer  Gate 4: QA & Security Review
-Phase 8  User Testing    → /skill:customer-user      UAT (must approve)
-Phase 9  Deploy          → Gate 5 + feature-manager
+                         ─────── ROUTE THROUGH FEATURE MANAGER ───────
+Phase 3  Orchestration   → /skill:feature-manager (invokes design, eng, QA, etc.)
+Phase 4  Design          → feature-manager → design-lead   Gate 1: Design Review
+Phase 5  Engineering     → feature-manager → engineering-*  Gates 2 & 3
+Phase 6  QA              → feature-manager → qa-*           Gate 4: QA & Security
+Phase 7  Security        → feature-manager → security-*     
+Phase 8  User Testing    → feature-manager → customer-user  UAT (must approve)
+Phase 9  Deploy          → feature-manager → Gate 5
+                         ──────────────────────────────────────────────
 Phase 10 Post-Launch     → /skill:ceo-review
 ```
 
@@ -187,17 +207,19 @@ Phase 10 Post-Launch     → /skill:ceo-review
 
 ### Picking the Right Skill for Your Situation
 
+> ⚠️ **For any feature work (new features, QA, user testing), always start with `/skill:feature-manager`.** The table below shows the full chain. Skills marked with `*` are invoked by the Feature Manager, not directly.
+
 | If you need to... | Start with this skill | Followed by... |
 |---|---|---|
-| Start a new product | `ceo-review` | `product-review` → `design-lead` → `feature-manager` |
-| Add a feature to an existing app | `product-review` | `feature-manager` → relevant engineering skills |
+| Start a new product | `ceo-review` | `product-review` → **`feature-manager`** → design*, eng*, QA* |
+| Add a feature to an existing app | `product-review` | **`feature-manager`** → relevant engineering skills* |
 | Fix a production bug | `engineering-*` (whichever platform) | `bug-hunter` for root cause |
 | Improve performance | `engineering-frontend` / `engineering-backend` / `engineering-database` | — |
 | Run a security audit | `security-engineer` | `bug-hunter` → `engineering-manager` |
 | Prepare for App Store launch | `qa-ios` | `engineering-manager` |
 | Prepare for Play Store launch | `qa-android` | `engineering-manager` |
-| Run QA on a new feature | `qa-frontend` / `qa-backend` / `qa-android` / `qa-ios` | `engineering-manager` (Gate 4) |
-| Test with real users | `customer-user` | `engineering-manager` |
+| Run QA on a new feature | **`feature-manager`** | → `qa-*` skills* → Gate 4 |
+| Test with real users | **`feature-manager`** | → `customer-user`* → UAT sign-off |
 | Review architecture | `engineering-manager` | Relevant principal engineer |
 | Define documentation standards | `tech-doc-manager` | All teams |
 | Understand your users | `audience` | All downstream decisions |
@@ -212,7 +234,7 @@ Each folder in the cabinet is a skill with a `SKILL.md` file. Parent skills cont
 | `ceo-review` | `cabinet/ceo/` | Product vision, business strategy, phased roadmap |
 | `cpo` | `cabinet/cpo/` | CPO — parent director for product, design, video |
 | `cto` | `cabinet/cto/` | CTO — parent director for engineering, security |
-| `feature-manager` | `cabinet/cpo/feature-manager/` | End-to-end feature orchestration & delivery |
+| `feature-manager` | `cabinet/cpo/feature-manager/` | **SOLE ENTRY POINT** for all feature-level sub-skill invocation — orchestrates design, engineering, QA, security, and user testing |
 | `product-review` | `cabinet/cpo/product-review/` | Feature breakdown, user stories, release planning |
 | `customer-user` | `cabinet/cpo/product-review/customer-user/` | User personas, usability testing, UAT |
 | `design-lead` | `cabinet/cpo/design-lead/` | Cross-platform design governance, design system |
@@ -245,8 +267,10 @@ Each folder in the cabinet is a skill with a `SKILL.md` file. Parent skills cont
 
 ## Pipeline Flow
 
+> All feature-level pipelines below are orchestrated by `/skill:feature-manager`. The Feature Manager invokes each sub-skill through their parent director as needed. Do not invoke design, engineering, QA, or user-testing skills directly for feature work.
+
 ```
-DESIGN PIPELINE (under design-lead):
+DESIGN PIPELINE (orchestrated by feature-manager → design-lead):
   design-lead → design-android → engineering-android → qa-android
   design-lead → design-ios     → engineering-ios     → qa-ios
   design-lead → design-mobile-web  → engineering-frontend → qa-frontend
@@ -280,7 +304,7 @@ VIDEO PRODUCTION PIPELINE (invoked by feature-manager):
     ├── video-editor        → post-production assembly & export
     └── video-packaging     → thumbnails, metadata, distribution
 
-DELIVERY PIPELINE (sequential ordering enforced):
+DELIVERY PIPELINE (sequential ordering enforced by feature-manager):
   Design → Gate 1 → Frontend → Gate 2 → Backend → Gate 3
     → QA (backend → frontend) → Gate 4 → User Validation → Done
       → Gate 5 → Deploy

@@ -134,7 +134,7 @@ Design (Android + iOS only) → Gate 1
 
 > **Rule: Create the docs BEFORE any work begins.**
 
-1. Read the relevant Product Spec from `cabinet/cpo/doc-store/product/product-review/`
+1. Read the relevant Product Spec from `cabinet/cpo/product-review/doc-store/`
 2. Read the CEO Vision for business context
 3. Clarify any ambiguous requirements (ask user if needed)
 4. Define the feature scope clearly:
@@ -252,8 +252,8 @@ Design (Android + iOS only) → Gate 1
    - **Mobile-only features** (Variant C): REQUIRED — same as frontend features
    - When in doubt, run it. Cost of skipping is higher than cost of running.
 
-2. Delegate `customer-user` (`cabinet/cpo/product/customer-user/`): Usability testing and UAT
-3. Wait for the UAT report from `cabinet/cpo/doc-store/audience/{product}/uat-report-{version}.md`
+2. Delegate `customer-user` (`cabinet/cpo/product-review/customer-user/`): Usability testing and UAT
+3. Wait for the UAT report from `audience/doc-store/{product}/uat-report-{version}.md`
 4. Check the sign-off status in the report:
    - **APPROVED**: All pass criteria met. Proceed to Feature Completion Gate.
    - **CONDITIONALLY APPROVED**: Minor issues found. Document in movement tracker, proceed with tracked follow-ups.

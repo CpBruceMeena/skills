@@ -44,7 +44,7 @@ Each CTO team maintains a `doc-store/` directory at the root of its skill folder
 
 #### Engineering Frontend
 ```
-cabinet/cto/engineering/engineering-frontend/doc-store/
+cabinet/cto/engineering-manager/frontend/doc-store/
 └── feature-{name}/
     ├── architecture.md           # Frontend architecture & tech stack decisions
     ├── component-tree.md         # Component hierarchy & dependencies
@@ -53,7 +53,7 @@ cabinet/cto/engineering/engineering-frontend/doc-store/
 
 #### Engineering Backend
 ```
-cabinet/cto/engineering/engineering-backend/doc-store/
+cabinet/cto/engineering-manager/backend/doc-store/
 └── feature-{name}/
     ├── architecture.md           # Backend architecture & service design
     ├── api-design.md             # REST/GraphQL API design documents
@@ -62,7 +62,7 @@ cabinet/cto/engineering/engineering-backend/doc-store/
 
 #### Engineering Database
 ```
-cabinet/cto/engineering/engineering-database/doc-store/
+cabinet/cto/engineering-manager/database/doc-store/
 └── feature-{name}/
     ├── schema.md                 # Database schema design
     ├── migrations.md             # Migration plans & rollback strategies
@@ -71,7 +71,7 @@ cabinet/cto/engineering/engineering-database/doc-store/
 
 #### Engineering Android
 ```
-cabinet/cto/engineering/engineering-android/doc-store/
+cabinet/cto/engineering-manager/android/doc-store/
 └── feature-{name}/
     ├── architecture.md           # Android architecture & Compose design
     ├── navigation.md             # Navigation graph & screen flow
@@ -80,7 +80,7 @@ cabinet/cto/engineering/engineering-android/doc-store/
 
 #### Engineering iOS
 ```
-cabinet/cto/engineering/engineering-ios/doc-store/
+cabinet/cto/engineering-manager/ios/doc-store/
 └── feature-{name}/
     ├── architecture.md           # iOS architecture & SwiftUI design
     ├── navigation.md             # Navigation stack & screen flow
@@ -89,7 +89,7 @@ cabinet/cto/engineering/engineering-ios/doc-store/
 
 #### Engineering Manager
 ```
-cabinet/cto/engineering/engineering-manager/doc-store/
+cabinet/cto/engineering-manager/doc-store/
 └── feature-{name}/
     ├── design-review.md          # Design feasibility sign-off
     ├── architecture-review.md    # Architecture decision sign-off
@@ -102,7 +102,7 @@ cabinet/cto/engineering/engineering-manager/doc-store/
 
 #### QA Frontend
 ```
-cabinet/cto/engineering/qa/qa-frontend/doc-store/
+cabinet/cto/engineering-manager/qa-frontend/doc-store/
 └── feature-{name}/
     ├── test-plan.md              # Frontend test strategy & plan
     ├── test-report.md            # Test execution results
@@ -111,7 +111,7 @@ cabinet/cto/engineering/qa/qa-frontend/doc-store/
 
 #### QA Backend
 ```
-cabinet/cto/engineering/qa/qa-backend/doc-store/
+cabinet/cto/engineering-manager/qa-backend/doc-store/
 └── feature-{name}/
     ├── test-plan.md              # Backend test strategy & plan
     ├── test-report.md            # Test execution results
@@ -121,7 +121,7 @@ cabinet/cto/engineering/qa/qa-backend/doc-store/
 
 #### QA Android
 ```
-cabinet/cto/engineering/qa/qa-android/doc-store/
+cabinet/cto/engineering-manager/qa-android/doc-store/
 └── feature-{name}/
     ├── test-plan.md              # Android test strategy & plan
     ├── test-report.md            # Test execution results
@@ -130,7 +130,7 @@ cabinet/cto/engineering/qa/qa-android/doc-store/
 
 #### QA iOS
 ```
-cabinet/cto/engineering/qa/qa-ios/doc-store/
+cabinet/cto/engineering-manager/qa-ios/doc-store/
 └── feature-{name}/
     ├── test-plan.md              # iOS test strategy & plan
     ├── test-report.md            # Test execution results

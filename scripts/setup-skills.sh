@@ -1,9 +1,9 @@
 #!/bin/bash
 # setup-skills.sh — Install all skills as Codebuff slash commands
 #
-# Discovers every SKILL.md in the cabinet/ hierarchy, reads its `name:` from
-# frontmatter, and symlinks it into a target directory so Codebuff loads them
-# as /skill:<name> commands.
+# Discovers every SKILL.md in the Skills directory (cabinet/ + audience/),
+# reads its `name:` from frontmatter, and symlinks it into a target
+# directory so Codebuff loads them as /skill:<name> commands.
 #
 # Usage:
 #   # Global install (available in all projects)

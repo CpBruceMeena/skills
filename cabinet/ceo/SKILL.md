@@ -115,7 +115,7 @@ Define measurable success criteria:
 Produce the CEO Vision Document. Save it to the doc store:
 
 ```
-cabinet/cpo/doc-store/ceo/{project-name}/vision-{YYYY-MM-DD}.md
+cabinet/ceo/doc-store/{project-name}/vision-{YYYY-MM-DD}.md
 ```
 
 The document should contain:
@@ -143,7 +143,7 @@ After completing the CEO review, recommend:
 
 When re-running CEO review on an existing project (after development has begun):
 
-1. Read the existing CEO vision document from `cabinet/cpo/doc-store/ceo/{project-name}/`
+1. Read the existing CEO vision document from `cabinet/ceo/doc-store/{project-name}/`
 2. Read current development status from the project
 3. Identify what's been built, what's changed, and what's pending
 4. Re-evaluate the vision against current market and development reality

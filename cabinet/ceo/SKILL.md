@@ -127,17 +127,26 @@ The document should contain:
 - Success Metrics
 - Risks & Mitigations
 
-### Phase 8: Next Steps
+### Phase 8: Delegate Feature Delivery to Feature Manager
 
-After completing the CEO review, recommend:
-1. → `product-review` — to define the specific products and features
-2. → `design-lead` — for cross-platform design direction and governance
-3. Depending on platform needs:
-   - → `design-desktop-web` — for desktop web UI design
-   - → `design-mobile-web` — for mobile web UI design
-   - → `design-android` — for native Android design
-   - → `design-ios` — for native iOS design
-4. → `engineering-frontend`, → `engineering-backend`, etc. — for engineering
+> **All feature execution at the sub-level goes through the Feature Manager.** Do NOT delegate directly to engineering, design, or other sub-skills for feature work.
+
+After completing the CEO review, the vision and strategy are handed to the **Feature Manager** (`/skill:feature-manager`), who is the sole orchestrator for end-to-end feature delivery. The Feature Manager will:
+- Coordinate with `product-review` for feature definition
+- Work with `design-lead` for cross-platform design
+- Orchestrate engineering via `engineering-manager`
+- Coordinate QA, security, and user validation
+- Track all progress in the movement log
+
+**Recommended handoff:**
+1. → `feature-manager` — delegate E2E feature delivery (sole entry point for all sub-level execution)
+2. → `cpo` — for product organization oversight (if strategic product decisions needed)
+3. → `cabinet` — for executive oversight and escalation
+
+### Phase 9: Next Steps
+
+After completing the CEO review:
+1. → `feature-manager` — for E2E feature orchestration and delivery
 
 ## Re-review Mode
 
@@ -148,7 +157,7 @@ When re-running CEO review on an existing project (after development has begun):
 3. Identify what's been built, what's changed, and what's pending
 4. Re-evaluate the vision against current market and development reality
 5. Update the vision document with new insights
-6. Recommend which downstream skills (product, design, engineering, QA, security) need re-running based on scope of changes
+6. Recommend → `feature-manager` to re-orchestrate remaining feature work based on revised scope
 7. Flag any strategic pivots or scope changes
 
 ## Voice

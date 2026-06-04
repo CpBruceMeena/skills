@@ -1,7 +1,7 @@
 ---
 name: cabinet
 version: 1.0.0
-description: Cabinet — Executive Board. Top-level parent director over the entire cabinet: CEO (vision & strategy), CPO (product, design, video), and CTO (engineering, QA, security). Invokes and governs executive-level skills in the correct order, reviews high-level deliverables, and reports to the user (founder/investor).
+description: Cabinet — Executive Board. Top-level parent director over the entire cabinet: CEO (vision & strategy), CPO (product, design, video), and CTO (engineering, QA, security). Delegates feature delivery to feature-manager (under CPO) for end-to-end orchestration. Invokes and governs executive-level skills in the correct order, reviews high-level deliverables, and reports to the user (founder/investor).
 allowed-tools:
   - Read
   - Write
@@ -41,6 +41,10 @@ User / Founder / Investor (invokes)
 │  ├── → cpo                (product, design, video)            │
 │  │      └── delegates to:                                     │
 │  │          product-review, design-lead, video-director       │
+│  │      └── → feature-manager  (E2E feature delivery)         │
+│  │             Delegates feature execution to the             │
+│  │             feature-manager after product definition       │
+│  │                                                             │
 │  └── → cto                (engineering, QA, security)         │
 │         └── delegates to:                                     │
 │             engineering-manager, tech-doc-manager, ciso       │
@@ -75,18 +79,25 @@ Phase 1: Vision & Strategy
 ├── Step 1: Invoke → ceo-review → get vision document & roadmap
 ├── Step 2: Cabinet reviews → approved? → continue
 │
-Phase 2: Product Definition
-├── Step 3: Invoke → cpo → define products, design, user research
-│           (cpo delegates to product-review, design-lead, etc.)
+Phase 2: Feature Definition
+├── Step 3: Invoke → cpo → define products, design
+│           (cpo delegates to product-review, design-lead)
 ├── Step 4: Cabinet reviews → approved? → continue
 │
-Phase 3: Technical Execution
-├── Step 5: Invoke → cto → engineering, QA, security
-│           (cto delegates to engineering-manager, ciso, etc.)
+Phase 3: Feature Orchestration
+├── Step 5: Invoke → feature-manager → orchestrates E2E delivery
+│           Runs: Discovery → Design → Frontend → Backend →
+│                 QA → Security → User Validation → Done
+│           (feature-manager coordinates across CPO & CTO skills)
 ├── Step 6: Cabinet reviews → approved? → continue
 │
-Phase 4: Delivery & Review
-└── Step 7: Report to user with final artifacts
+Phase 4: Technical Execution (CTO-led)
+├── Step 7: Invoke → cto → engineering, QA, security
+│           (cto delegates to engineering-manager, ciso, etc.)
+├── Step 8: Cabinet reviews → approved? → continue
+│
+Phase 5: Delivery & Review
+└── Step 9: Report to user with final artifacts
 ```
 
 ### Phase 1: Vision & Strategy
@@ -104,7 +115,7 @@ Spawn `ceo-review` to define the product vision, business strategy, target audie
 
 ➡ **Decision**: APPROVED → continue. REVISION NEEDED → send feedback to ceo-review.
 
-### Phase 2: Product Definition
+### Phase 2: Feature Definition
 
 **Step 2 — Invoke cpo**
 
@@ -122,14 +133,38 @@ Spawn `cpo` with the approved vision document. The CPO will delegate to:
 
 ➡ **Decision**: APPROVED → continue. REVISION NEEDED → send feedback to cpo.
 
-### Phase 3: Technical Execution
+### Phase 3: Feature Orchestration
 
-**Step 3 — Invoke cto**
+**Step 3 — Invoke feature-manager**
 
-Spawn `cto` with the approved product specs and design deliverables. The CTO will delegate to:
+Spawn `feature-manager` (`cabinet/cpo/feature-manager/`) with the approved product specs and design deliverables. The Feature Manager is the **E2E delivery orchestrator** that handles:
+- **Discovery & Planning** — discusses with sub-skills to understand implementation approach before delegating
+- **Design coordination** — works with Design Lead for platform-specific designs
+- **Engineering sequencing** — enforces Frontend → Backend order
+- **QA & Security** — coordinates backend-first QA, then frontend/mobile, plus security audit
+- **User Validation** — runs UAT via customer-user before marking Done
+- **Movement tracking** — logs every action in the movement log for resume safety
+
+The Feature Manager coordinates across CPO skills (design, product) and CTO skills (engineering, QA, security) through the review gates managed by `engineering-manager`.
+
+➡ **Review deliverable**: Read the feature plan and movement log from `cabinet/cpo/feature-manager/feature-{name}/`
+- [ ] Feature scope defined and approved
+- [ ] Discovery discussions conducted with relevant sub-skills
+- [ ] Implementation plan documented with timelines
+- [ ] Movement log created and tracking progress
+
+➡ **Decision**: APPROVED → continue. REVISION NEEDED → send feedback to feature-manager.
+
+### Phase 4: Technical Execution
+
+**Step 4 — Invoke cto**
+
+Spawn `cto` with the approved product specs, design deliverables, and feature plan. The CTO will delegate to:
 - `engineering-manager` — review gates across all engineering and QA
 - `tech-doc-manager` — documentation standards
 - `ciso` — security oversight (security-engineer, bug-hunter)
+
+The CTO works in parallel with the Feature Manager — the CTO handles the technical organization (engineering, QA, security), while the Feature Manager handles the end-to-end orchestration timeline.
 
 ➡ **Review deliverable**: Read architecture docs, QA reports, and security clearance from `cabinet/cto/`
 - [ ] Engineering architecture documented
@@ -139,13 +174,14 @@ Spawn `cto` with the approved product specs and design deliverables. The CTO wil
 
 ➡ **Decision**: APPROVED → continue. REVISION NEEDED → send feedback to cto.
 
-### Phase 4: Delivery & Review
+### Phase 5: Delivery & Review
 
-**Step 4 — Report to user**
+**Step 5 — Report to user**
 
 Deliver all approved artifacts to the user:
 - CEO vision document and roadmap
 - Product specs and design deliverables
+- Feature plan and movement log (via feature-manager)
 - Engineering artifacts and QA reports
 - Security clearance
 - Any pending decisions or risks
@@ -163,4 +199,5 @@ cabinet/doc-store/{project}/cabinet-review-{date}.md                   (Cabinet 
 
 1. → `ceo-review` — to define product vision and strategy
 2. → `cpo` — for product definition, design, and video production
-3. → `cto` — for engineering execution, QA, and security
+3. → `feature-manager` — for E2E feature orchestration and delivery
+4. → `cto` — for engineering execution, QA, and security
